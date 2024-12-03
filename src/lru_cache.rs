@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 
-pub struct LRUCache {
+pub struct LRUCache<K, V> {
     capacity: usize,
-    cached_elements: HashMap<String, String>,
-    elements_order: Vec<String>,
+    cached_elements: HashMap<K, V>,
+    elements_order: Vec<K>,
 }
 
-impl LRUCache {
+impl<K, V> LRUCache<K, V>
+where
+    K: Eq + Copy + std::hash::Hash + std::fmt::Display,
+    V: std::fmt::Debug,
+{
     pub fn new(capacity: usize) -> Self {
         LRUCache {
             capacity,
@@ -15,13 +19,11 @@ impl LRUCache {
         }
     }
 
-    pub fn get(&mut self, key: &str) -> Option<&String> {
-        let key_string = key.to_string();
+    pub fn get(&mut self, key: K) -> Option<&V> {
+        if self.cached_elements.contains_key(&key) {
+            self.update_order(key);
 
-        if self.cached_elements.contains_key(&key_string) {
-            self.update_order(key_string);
-
-            match self.cached_elements.get(key) {
+            match self.cached_elements.get(&key) {
                 Some(v) => Some(v),
                 None => None,
             }
@@ -30,24 +32,22 @@ impl LRUCache {
         }
     }
 
-    pub fn put(&mut self, key: &str, value: String) {
-        let key_string = key.to_string();
-
-        if self.cached_elements.contains_key(&key_string) {
-            self.cached_elements.insert(key_string.clone(), value);
-            self.update_order(key_string);
+    pub fn put(&mut self, key: K, value: V) {
+        if self.cached_elements.contains_key(&key) {
+            self.cached_elements.insert(key.clone(), value);
+            self.update_order(key);
         } else {
-            if self.cached_elements.len() >= self.capacity {
+            if self.cached_elements.len() == self.capacity {
                 let lru_key = self.elements_order.remove(0);
                 self.cached_elements.remove(&lru_key);
             }
 
-            self.cached_elements.insert(key_string.clone(), value);
-            self.elements_order.push(key_string);
+            self.cached_elements.insert(key.clone(), value);
+            self.elements_order.push(key);
         }
     }
 
-    fn update_order(&mut self, key: String) {
+    fn update_order(&mut self, key: K) {
         if let Some(pos) = self.elements_order.iter().position(|k| k == &key) {
             self.elements_order.remove(pos);
             self.elements_order.push(key);
