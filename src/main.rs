@@ -1,8 +1,26 @@
 mod lru_cache;
 
 fn main() {
-    let lru = lru_cache::LRUCache::new(5);
-    println!("{:?}", lru);
+    let mut lru = lru_cache::LRUCache::new(5);
+    lru.put("key1", String::from("1"));
+    lru.put("key2", String::from("2"));
+    lru.put("key3", String::from("3"));
+    lru.put("key4", String::from("4"));
+    lru.put("key5", String::from("5"));
+
+    lru.print_cache_elements();
+
+    println!("\nAdding element \"key6\"");
+    lru.put("key6", String::from("6"));
+    lru.print_cache_elements();
+
+    println!("\nGetting element \"key3\"");
+    lru.get("key3");
+    lru.print_cache_elements();
+
+    println!("\nUpdating element \"key5\"");
+    lru.put("key5", String::from("updated value"));
+    lru.print_cache_elements();
 }
 
 #[cfg(test)]
