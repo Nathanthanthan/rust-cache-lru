@@ -3,8 +3,8 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub struct LRUCache {
     capacity: usize,
-    map: HashMap<i32, (i32, usize)>,
-    order: Vec<i32>,
+    map: HashMap<String, (String, usize)>,
+    order: Vec<String>,
 }
 
 impl LRUCache {
