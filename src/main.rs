@@ -1,3 +1,6 @@
+mod lru_cache;
+
 fn main() {
-    // Let's rock!
+    let lru = lru_cache::LRUCache::new(5);
+    println!("{:?}", lru);
 }
