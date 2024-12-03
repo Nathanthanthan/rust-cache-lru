@@ -8,19 +8,19 @@ fn main() {
     lru.put("key4", String::from("4"));
     lru.put("key5", String::from("5"));
 
-    lru.print_cache_elements();
+    lru.print_cached_elements();
 
     println!("\nAdding element \"key6\"");
     lru.put("key6", String::from("6"));
-    lru.print_cache_elements();
+    lru.print_cached_elements();
 
     println!("\nGetting element \"key3\"");
     lru.get("key3");
-    lru.print_cache_elements();
+    lru.print_cached_elements();
 
     println!("\nUpdating element \"key5\"");
     lru.put("key5", String::from("updated value"));
-    lru.print_cache_elements();
+    lru.print_cached_elements();
 }
 
 #[cfg(test)]
