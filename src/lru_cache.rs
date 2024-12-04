@@ -74,8 +74,20 @@ where
         }
     }
 
-    /// Reorders the provided key as the MRU.
+    /// Deletes the element corresponding to the provided key from the cache.
     /// 
+    /// **Attributes:**
+    /// * `key` - The key of the element to delete.
+    pub fn delete(&mut self, key: K) {
+        self.cached_elements.remove(&key);
+
+        if let Some(pos) = self.elements_order.iter().position(|k| k == &key) {
+            self.elements_order.remove(pos);
+        }
+    }
+
+    /// Reorders the provided key as the MRU.
+    ///
     /// **Attributes:**
     /// * `key` - The key of the element to reorder as MRU.
     fn update_order(&mut self, key: K) {
