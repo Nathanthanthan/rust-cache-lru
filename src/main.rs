@@ -8,18 +8,37 @@ fn main() {
     lru.put("key4", String::from("4"));
     lru.put("key5", String::from("5"));
 
+    // Cache is at full capacity
     lru.print_cached_elements();
 
-    println!("\nAdding element \"key6\"");
+    // Inserting an element
+    println!("\nInserting element \"key6\"");
     lru.put("key6", String::from("6"));
     lru.print_cached_elements();
 
+    // Getting an element
     println!("\nGetting element \"key3\"");
     lru.get("key3");
     lru.print_cached_elements();
 
+    // Updating an element
     println!("\nUpdating element \"key5\"");
     lru.put("key5", String::from("updated value"));
+    lru.print_cached_elements();
+
+    // Deleting an element, cache capacity is now at 4/5
+    println!("\nDeleting element \"key2\"");
+    lru.delete("key2");
+    lru.print_cached_elements();
+
+    // Cache reaches full capacity again
+    println!("\nAdding element \"key7\"");
+    lru.put("key7", String::from("7"));
+    lru.print_cached_elements();
+
+    // LRU element overflows the capacity and gets removed
+    println!("\nAdding element \"key8\"");
+    lru.put("key8", String::from("8"));
     lru.print_cached_elements();
 }
 
