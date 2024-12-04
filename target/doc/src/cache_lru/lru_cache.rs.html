@@ -81,19 +81,36 @@
 <a href="#81" id="81">81</a>
 <a href="#82" id="82">82</a>
 <a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="doccomment">/// ### LRU cache implementation
-///
-/// A cache that can hold a choosen quantity of elements,
+<span class="doccomment">/// A cache that can hold a choosen quantity of elements,
 /// deleting excess elements by order of least used.
+///
+/// # Type generics
+/// * `K` - Key type.
+/// * `V` - Value type.
 </span><span class="kw">pub struct </span>LRUCache&lt;K, V&gt; {
-    <span class="comment">// The cache's maximum size
+    <span class="doccomment">/// The cache's maximum size
     </span>capacity: usize,
-    <span class="comment">// HashMap containing all cached elements
+    <span class="doccomment">/// HashMap containing all cached elements
     </span>cached_elements: HashMap&lt;K, V&gt;,
-    <span class="comment">// Vector containing all the keys of currently cached elements,
-    // from least to most recently used
+    <span class="doccomment">/// Vector containing all the keys of currently cached elements,
+    /// from least to most recently used
     </span>elements_order: Vec&lt;K&gt;,
 }
 
@@ -103,6 +120,9 @@
     V: std::fmt::Debug,
 {
     <span class="doccomment">/// Creates a new instance of LRU cache with the provided capacity.
+    ///
+    /// **Attributes:**
+    /// * `capacity` - The cache's maximum size.
     </span><span class="kw">pub fn </span>new(capacity: usize) -&gt; <span class="self">Self </span>{
         LRUCache {
             capacity,
@@ -113,6 +133,9 @@
 
     <span class="doccomment">/// Returns the element corresponding to the provided key
     /// and reorders said element as the MRU.
+    ///
+    /// **Attributes:**
+    /// * `key` - The key of the element to reorder and return.
     </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>V&gt; {
         <span class="kw">if </span><span class="self">self</span>.cached_elements.contains_key(<span class="kw-2">&amp;</span>key) {
             <span class="self">self</span>.update_order(key);
@@ -128,8 +151,12 @@
 
     <span class="doccomment">/// If the provided key already exists in the cache, update the corresponding element's value.
     /// Otherwise, add the provided key/value pair to the cache, removing the LRU excess element in the process.
-    /// 
+    ///
     /// In both cases, the provided element is reordered as the MRU.
+    ///
+    /// **Attributes:**
+    /// * `key` - The key of the element to update/insert.
+    /// * `value` - The value of the updated/inserted element.
     </span><span class="kw">pub fn </span>put(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K, value: V) {
         <span class="kw">if </span><span class="self">self</span>.cached_elements.contains_key(<span class="kw-2">&amp;</span>key) {
             <span class="self">self</span>.cached_elements.insert(key.clone(), value);
@@ -146,6 +173,9 @@
     }
 
     <span class="doccomment">/// Reorders the provided key as the MRU.
+    /// 
+    /// **Attributes:**
+    /// * `key` - The key of the element to reorder as MRU.
     </span><span class="kw">fn </span>update_order(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K) {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = <span class="self">self</span>.elements_order.iter().position(|k| k == <span class="kw-2">&amp;</span>key) {
             <span class="self">self</span>.elements_order.remove(pos);
