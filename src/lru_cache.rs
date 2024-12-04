@@ -16,6 +16,7 @@ pub struct LRUCache<K, V> {
     elements_order: Vec<K>,
 }
 
+/// # General methods
 impl<K, V> LRUCache<K, V>
 where
     K: Eq + Copy + std::hash::Hash + std::fmt::Debug,
@@ -33,6 +34,35 @@ where
         }
     }
 
+    /// Reorders the provided key as the MRU.
+    ///
+    /// **Attributes:**
+    /// * `key` - The key of the element to reorder as MRU.
+    fn update_order(&mut self, key: K) {
+        if let Some(pos) = self.elements_order.iter().position(|k| k == &key) {
+            self.elements_order.remove(pos);
+            self.elements_order.push(key);
+        }
+    }
+
+    /// Prints all elements currently in the cache, from least to most recently used.
+    pub fn print_cached_elements(&mut self) {
+        println!("---------- Currently cached values ----------");
+
+        for key in self.elements_order.clone() {
+            println!("{:?}: {:?}", key, self.cached_elements.get(&key));
+        }
+
+        println!("---------------------------------------------");
+    }
+}
+
+/// # "CRUD" methods
+impl<K, V> LRUCache<K, V>
+where
+    K: Eq + Copy + std::hash::Hash + std::fmt::Debug,
+    V: std::fmt::Debug,
+{
     /// Returns the element corresponding to the provided key
     /// and reorders said element as the MRU.
     ///
@@ -75,7 +105,7 @@ where
     }
 
     /// Deletes the element corresponding to the provided key from the cache.
-    /// 
+    ///
     /// **Attributes:**
     /// * `key` - The key of the element to delete.
     pub fn delete(&mut self, key: K) {
@@ -84,27 +114,5 @@ where
         if let Some(pos) = self.elements_order.iter().position(|k| k == &key) {
             self.elements_order.remove(pos);
         }
-    }
-
-    /// Reorders the provided key as the MRU.
-    ///
-    /// **Attributes:**
-    /// * `key` - The key of the element to reorder as MRU.
-    fn update_order(&mut self, key: K) {
-        if let Some(pos) = self.elements_order.iter().position(|k| k == &key) {
-            self.elements_order.remove(pos);
-            self.elements_order.push(key);
-        }
-    }
-
-    /// Prints all elements currently in the cache, from least to most recently used.
-    pub fn print_cached_elements(&mut self) {
-        println!("---------- Currently cached values ----------");
-
-        for key in self.elements_order.clone() {
-            println!("{:?}: {:?}", key, self.cached_elements.get(&key));
-        }
-
-        println!("---------------------------------------------");
     }
 }

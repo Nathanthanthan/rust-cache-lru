@@ -108,6 +108,14 @@
 <a href="#108" id="108">108</a>
 <a href="#109" id="109">109</a>
 <a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
 <span class="doccomment">/// A cache that can hold a choosen quantity of elements,
@@ -126,7 +134,8 @@
     </span>elements_order: Vec&lt;K&gt;,
 }
 
-<span class="kw">impl</span>&lt;K, V&gt; LRUCache&lt;K, V&gt;
+<span class="doccomment">/// # General methods
+</span><span class="kw">impl</span>&lt;K, V&gt; LRUCache&lt;K, V&gt;
 <span class="kw">where
     </span>K: Eq + Copy + std::hash::Hash + std::fmt::Debug,
     V: std::fmt::Debug,
@@ -143,6 +152,35 @@
         }
     }
 
+    <span class="doccomment">/// Reorders the provided key as the MRU.
+    ///
+    /// **Attributes:**
+    /// * `key` - The key of the element to reorder as MRU.
+    </span><span class="kw">fn </span>update_order(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = <span class="self">self</span>.elements_order.iter().position(|k| k == <span class="kw-2">&amp;</span>key) {
+            <span class="self">self</span>.elements_order.remove(pos);
+            <span class="self">self</span>.elements_order.push(key);
+        }
+    }
+
+    <span class="doccomment">/// Prints all elements currently in the cache, from least to most recently used.
+    </span><span class="kw">pub fn </span>print_cached_elements(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="macro">println!</span>(<span class="string">"---------- Currently cached values ----------"</span>);
+
+        <span class="kw">for </span>key <span class="kw">in </span><span class="self">self</span>.elements_order.clone() {
+            <span class="macro">println!</span>(<span class="string">"{:?}: {:?}"</span>, key, <span class="self">self</span>.cached_elements.get(<span class="kw-2">&amp;</span>key));
+        }
+
+        <span class="macro">println!</span>(<span class="string">"---------------------------------------------"</span>);
+    }
+}
+
+<span class="doccomment">/// # "CRUD" methods
+</span><span class="kw">impl</span>&lt;K, V&gt; LRUCache&lt;K, V&gt;
+<span class="kw">where
+    </span>K: Eq + Copy + std::hash::Hash + std::fmt::Debug,
+    V: std::fmt::Debug,
+{
     <span class="doccomment">/// Returns the element corresponding to the provided key
     /// and reorders said element as the MRU.
     ///
@@ -185,7 +223,7 @@
     }
 
     <span class="doccomment">/// Deletes the element corresponding to the provided key from the cache.
-    /// 
+    ///
     /// **Attributes:**
     /// * `key` - The key of the element to delete.
     </span><span class="kw">pub fn </span>delete(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K) {
@@ -194,28 +232,6 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = <span class="self">self</span>.elements_order.iter().position(|k| k == <span class="kw-2">&amp;</span>key) {
             <span class="self">self</span>.elements_order.remove(pos);
         }
-    }
-
-    <span class="doccomment">/// Reorders the provided key as the MRU.
-    ///
-    /// **Attributes:**
-    /// * `key` - The key of the element to reorder as MRU.
-    </span><span class="kw">fn </span>update_order(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: K) {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(pos) = <span class="self">self</span>.elements_order.iter().position(|k| k == <span class="kw-2">&amp;</span>key) {
-            <span class="self">self</span>.elements_order.remove(pos);
-            <span class="self">self</span>.elements_order.push(key);
-        }
-    }
-
-    <span class="doccomment">/// Prints all elements currently in the cache, from least to most recently used.
-    </span><span class="kw">pub fn </span>print_cached_elements(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="macro">println!</span>(<span class="string">"---------- Currently cached values ----------"</span>);
-
-        <span class="kw">for </span>key <span class="kw">in </span><span class="self">self</span>.elements_order.clone() {
-            <span class="macro">println!</span>(<span class="string">"{:?}: {:?}"</span>, key, <span class="self">self</span>.cached_elements.get(<span class="kw-2">&amp;</span>key));
-        }
-
-        <span class="macro">println!</span>(<span class="string">"---------------------------------------------"</span>);
     }
 }
 </code></pre></div></section></main></body></html>

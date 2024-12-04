@@ -47,6 +47,72 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_put_and_get() {
+        let mut lru = lru_cache::LRUCache::new(2);
+        lru.put("key1", 1);
+        lru.put("key2", 2);
+
+        assert_eq!(lru.get("key1"), Some(&1));
+        assert_eq!(lru.get("key2"), Some(&2));
+    }
+
+    #[test]
+    fn test_capacity_overflow() {
+        let mut lru = lru_cache::LRUCache::new(2);
+        lru.put("key1", 1);
+        lru.put("key2", 2);
+        lru.put("key3", 3);
+
+        // "key1" should be evicted
+        assert_eq!(lru.get("key1"), None);
+        assert_eq!(lru.get("key2"), Some(&2));
+        assert_eq!(lru.get("key3"), Some(&3));
+    }
+
+    #[test]
+    fn test_lru_update_order() {
+        let mut lru = lru_cache::LRUCache::new(3);
+        lru.put("key1", 1);
+        lru.put("key2", 2);
+        lru.put("key3", 3);
+
+        // Access "key1" to mark it as recently used
+        lru.get("key1");
+
+        // Add a new key, which should evict "key2"
+        lru.put("key4", 4);
+
+        assert_eq!(lru.get("key2"), None);
+        assert_eq!(lru.get("key1"), Some(&1));
+        assert_eq!(lru.get("key3"), Some(&3));
+        assert_eq!(lru.get("key4"), Some(&4));
+    }
+
+    #[test]
+    fn test_delete() {
+        let mut lru = lru_cache::LRUCache::new(3);
+        lru.put("key1", 1);
+        lru.put("key2", 2);
+        lru.put("key3", 3);
+
+        // Delete "key2"
+        lru.delete("key2");
+
+        assert_eq!(lru.get("key2"), None);
+        assert_eq!(lru.get("key1"), Some(&1));
+        assert_eq!(lru.get("key3"), Some(&3));
+    }
+
+    #[test]
+    fn test_update_existing_key() {
+        let mut lru = lru_cache::LRUCache::new(2);
+        lru.put("key1", String::from("value1"));
+        lru.put("key1", String::from("updated_value1"));
+
+        assert_eq!(lru.get("key1"), Some(&String::from("updated_value1")));
+    }
+
+    #[test]
     fn test_lru_cache() {
         let mut cache = lru_cache::LRUCache::new(3);
         cache.put("A", String::from("value_a"));
