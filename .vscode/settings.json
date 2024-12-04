@@ -1,5 +1,7 @@
 {
   "conventionalCommits.scopes": [
-    "LRU cache"
+    "LRU cache",
+    "Main",
+    "Tests"
   ]
 }
