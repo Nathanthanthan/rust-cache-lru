@@ -6,6 +6,13 @@ use std::collections::HashMap;
 /// # Type generics
 /// * `K` - Key type.
 /// * `V` - Value type.
+///
+/// # Fields
+/// * `capacity` - The cache's maximum size.
+/// * `cached_elements` - HashMap containing all cached elements.
+/// * `elements_order` - Vector containing all the keys of currently cached elements,
+///    from least to most recently used.
+#[derive(Debug)]
 pub struct LRUCache<K, V> {
     /// The cache's maximum size
     capacity: usize,
@@ -26,6 +33,19 @@ where
     ///
     /// **Attributes:**
     /// * `capacity` - The cache's maximum size.
+    ///
+    /// **Exemple:**
+    /// ```
+    /// use rust_lru_cache::LRUCache;
+    ///
+    /// let mut lru = LRUCache::new(3);
+    /// lru.put("key1", 1);
+    /// lru.put("key2", 2);
+    /// lru.put("key3", 3);
+    ///
+    /// // LRUCache { capacity: 5, cached_elements: {"key5": "5", "key3": "3", "key1": "1", "key4": "4", "key2": "2"}, elements_order: ["key1", "key2", "key3", "key4", "key5"] }
+    /// println!("{:?}", lru);
+    /// ```
     pub fn new(capacity: usize) -> Self {
         LRUCache {
             capacity,
@@ -46,6 +66,23 @@ where
     }
 
     /// Prints all elements currently in the cache, from least to most recently used.
+    ///
+    /// **Exemple:**
+    /// ```
+    /// use rust_lru_cache::LRUCache;
+    ///
+    /// let mut lru = LRUCache::new(3);
+    /// lru.put("key1", 1);
+    /// lru.put("key2", 2);
+    /// lru.put("key3", 3);
+    ///
+    /// // ---------- Currently cached values ----------
+    /// // "key1": Some(1)
+    /// // "key2": Some(2)
+    /// // "key3": Some(3)
+    /// // ---------------------------------------------
+    /// lru.print_cached_elements();
+    /// ```
     pub fn print_cached_elements(&mut self) {
         println!("---------- Currently cached values ----------");
 
@@ -68,6 +105,27 @@ where
     ///
     /// **Attributes:**
     /// * `key` - The key of the element to reorder and return.
+    ///
+    /// **Exemple:**
+    /// ```
+    /// use rust_lru_cache::LRUCache;
+    ///
+    /// let mut lru = LRUCache::new(2);
+    /// lru.put("key1", 1);
+    ///
+    /// // "key1" exists in the cache
+    /// assert_eq!(lru.get("key1"), Some(&1));
+    /// // "key2" does not exist in the cache
+    /// assert_eq!(lru.get("key2"), None);
+    ///
+    /// // Inserting "key2"
+    /// lru.put("key2", 2);
+    ///
+    /// // "key1" exists in the cache
+    /// assert_eq!(lru.get("key1"), Some(&1));
+    /// // "key2" exists in the cache
+    /// assert_eq!(lru.get("key2"), Some(&2));
+    /// ```
     pub fn get(&mut self, key: K) -> Option<&V> {
         if self.cached_elements.contains_key(&key) {
             self.update_order(key);
@@ -89,6 +147,25 @@ where
     /// **Attributes:**
     /// * `key` - The key of the element to update/insert.
     /// * `value` - The value of the updated/inserted element.
+    ///
+    ///
+    /// **Exemple:**
+    /// ```
+    /// use rust_lru_cache::LRUCache;
+    ///
+    /// // Capacity is 2
+    /// let mut lru = LRUCache::new(2);
+    ///
+    /// // Inserting 3 elements
+    /// lru.put("key1", 1);
+    /// lru.put("key2", 2);
+    /// lru.put("key3", 3);
+    ///
+    /// // "key1" should be evicted
+    /// assert_eq!(lru.get("key1"), None);
+    /// assert_eq!(lru.get("key2"), Some(&2));
+    /// assert_eq!(lru.get("key3"), Some(&3));
+    /// ```
     pub fn put(&mut self, key: K, value: V) {
         if self.cached_elements.contains_key(&key) {
             self.cached_elements.insert(key.clone(), value);
@@ -108,6 +185,23 @@ where
     ///
     /// **Attributes:**
     /// * `key` - The key of the element to delete.
+    ///
+    /// **Exemple:**
+    /// ```
+    /// use rust_lru_cache::LRUCache;
+    ///
+    /// let mut lru = LRUCache::new(3);
+    /// lru.put("key1", 1);
+    /// lru.put("key2", 2);
+    /// lru.put("key3", 3);
+    ///
+    /// // Deleting "key2"
+    /// lru.delete("key2");
+    ///
+    /// assert_eq!(lru.get("key2"), None);
+    /// assert_eq!(lru.get("key1"), Some(&1));
+    /// assert_eq!(lru.get("key3"), Some(&3));
+    /// ```
     pub fn delete(&mut self, key: K) {
         self.cached_elements.remove(&key);
 

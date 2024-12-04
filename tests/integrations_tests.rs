@@ -12,10 +12,10 @@ fn test_integration_scenario() {
     assert_eq!(cache.get("key2"), Some(&2));
     assert_eq!(cache.get("key3"), Some(&3));
 
-    // Add a new element to trigger eviction
+    // Inserting a new element to trigger eviction
     cache.put("key4", 4);
 
-    // key1 should be evicted
+    // "key1" should be evicted
     assert_eq!(cache.get("key1"), None);
     assert_eq!(cache.get("key4"), Some(&4));
 
@@ -23,7 +23,7 @@ fn test_integration_scenario() {
     cache.get("key2");
     cache.put("key5", 5);
 
-    // key3 should now be evicted
+    // "key3" should now be evicted
     assert_eq!(cache.get("key3"), None);
     assert_eq!(cache.get("key2"), Some(&2));
     assert_eq!(cache.get("key5"), Some(&5));
