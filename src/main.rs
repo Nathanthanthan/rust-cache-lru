@@ -1,12 +1,14 @@
-mod lru_cache;
+use rust_lru_cache::LRUCache;
 
 fn main() {
-    let mut lru = lru_cache::LRUCache::new(5);
+    let mut lru = LRUCache::new(5);
     lru.put("key1", String::from("1"));
     lru.put("key2", String::from("2"));
     lru.put("key3", String::from("3"));
     lru.put("key4", String::from("4"));
     lru.put("key5", String::from("5"));
+
+    println!("{:?}", lru);
 
     // Cache is at full capacity
     lru.print_cached_elements();
@@ -32,12 +34,12 @@ fn main() {
     lru.print_cached_elements();
 
     // Cache reaches full capacity again
-    println!("\nAdding element \"key7\"");
+    println!("\nInserting element \"key7\"");
     lru.put("key7", String::from("7"));
     lru.print_cached_elements();
 
     // LRU element overflows the capacity and gets removed
-    println!("\nAdding element \"key8\"");
+    println!("\nInserting element \"key8\"");
     lru.put("key8", String::from("8"));
     lru.print_cached_elements();
 }
@@ -48,8 +50,12 @@ mod tests {
 
     #[test]
     fn test_put_and_get() {
-        let mut lru = lru_cache::LRUCache::new(2);
+        let mut lru = LRUCache::new(2);
         lru.put("key1", 1);
+
+        assert_eq!(lru.get("key1"), Some(&1));
+        assert_eq!(lru.get("key2"), None);
+
         lru.put("key2", 2);
 
         assert_eq!(lru.get("key1"), Some(&1));
@@ -58,7 +64,10 @@ mod tests {
 
     #[test]
     fn test_capacity_overflow() {
-        let mut lru = lru_cache::LRUCache::new(2);
+        // Capacity is 2
+        let mut lru = LRUCache::new(2);
+
+        // Inserting 3 elements
         lru.put("key1", 1);
         lru.put("key2", 2);
         lru.put("key3", 3);
@@ -71,7 +80,7 @@ mod tests {
 
     #[test]
     fn test_lru_update_order() {
-        let mut lru = lru_cache::LRUCache::new(3);
+        let mut lru = LRUCache::new(3);
         lru.put("key1", 1);
         lru.put("key2", 2);
         lru.put("key3", 3);
@@ -79,7 +88,7 @@ mod tests {
         // Access "key1" to mark it as recently used
         lru.get("key1");
 
-        // Add a new key, which should evict "key2"
+        // Insert a new key, which should evict "key2"
         lru.put("key4", 4);
 
         assert_eq!(lru.get("key2"), None);
@@ -90,12 +99,12 @@ mod tests {
 
     #[test]
     fn test_delete() {
-        let mut lru = lru_cache::LRUCache::new(3);
+        let mut lru = LRUCache::new(3);
         lru.put("key1", 1);
         lru.put("key2", 2);
         lru.put("key3", 3);
 
-        // Delete "key2"
+        // Deleting "key2"
         lru.delete("key2");
 
         assert_eq!(lru.get("key2"), None);
@@ -105,7 +114,7 @@ mod tests {
 
     #[test]
     fn test_update_existing_key() {
-        let mut lru = lru_cache::LRUCache::new(2);
+        let mut lru = LRUCache::new(2);
         lru.put("key1", String::from("value1"));
         lru.put("key1", String::from("updated_value1"));
 
@@ -114,7 +123,7 @@ mod tests {
 
     #[test]
     fn test_lru_cache() {
-        let mut cache = lru_cache::LRUCache::new(3);
+        let mut cache = LRUCache::new(3);
         cache.put("A", String::from("value_a"));
         cache.put("B", String::from("value_b"));
         cache.put("C", String::from("value_c"));
